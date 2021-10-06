@@ -1,0 +1,13 @@
+<script>
+  let name = "world";
+</script>
+
+<h1>Hello {world}!</h1>
+
+<style>
+  h1 {
+    color: purple;
+    font-family: "Noto Sans", sans-serif;
+    font-size: 2em;
+  }
+</style>

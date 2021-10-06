@@ -1,0 +1,15 @@
+[package]
+name = "welt"
+version = "0.1.0"
+edition = "2018"
+
+[dependencies]
+html5ever = "0.25.1"
+pico-args = "0.4.2"
+tokio = "1.12.0"
+warp = { version = "0.3.1", default-features = false, features = ["tls"]  }
+
+[dependencies.ra-syntax]
+package = "syntax"
+git = "https://github.com/rust-analyzer/rust-analyzer"
+rev = "116c7aef7fad2835f127c8573543a05de8376978"
