@@ -4,8 +4,8 @@ version = "0.1.0"
 edition = "2018"
 
 [dependencies]
+clap = "3.0.0-beta.4"
 html5ever = "0.25.1"
-pico-args = "0.4.2"
 
 [dependencies.ra-syntax]
 package = "syntax"
