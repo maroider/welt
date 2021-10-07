@@ -1,0 +1,11 @@
+<script>
+    let mut count = 0;
+
+    let handle_click = || {
+        count += 1;
+    };
+</script>
+
+<button on:click={handle_click}>
+    Clicked {count} {if count == 1 { 'time' } else { 'times' }}
+</button>
