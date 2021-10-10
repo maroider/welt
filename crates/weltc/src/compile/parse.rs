@@ -1,7 +1,9 @@
+extern crate std;
+
 use std::fs;
 
 use html5ever::tendril::fmt::UTF8;
-use html5ever::tendril::{ByteTendril, ReadExt, Tendril};
+use html5ever::tendril::{ByteTendril, ReadExt, StrTendril, Tendril};
 use html5ever::tokenizer::{BufferQueue, TagKind, Token, TokenSink, TokenSinkResult, Tokenizer};
 
 pub fn parse(mut file: fs::File) {
@@ -23,16 +25,59 @@ struct Sink {
 }
 
 #[derive(Debug)]
-enum TreeNode {
-    Begin(MyTag),
+pub enum TreeNode {
+    Begin(Tag),
     Text(Tendril<UTF8>),
     End,
 }
 
 #[derive(Debug)]
-struct MyTag {
-    name: html5ever::LocalName,
-    attributes: Vec<html5ever::Attribute>,
+pub struct Tag {
+    pub name: html5ever::LocalName,
+    pub attributes: Vec<Attribute>,
+}
+
+#[derive(Debug)]
+pub struct Attribute {
+    pub name_span: Span,
+    pub name: html5ever::QualName,
+    pub value_span: Span,
+    pub value: AttributeValue,
+}
+
+#[derive(Debug)]
+pub enum AttributeValue {
+    String(StrTendril),
+    EtString(Vec<FeString>),
+}
+
+// NOTE: `Fe` means `FormatExpression`, as the contents of the template is a rust expression with a
+//        formatting speicifier.
+
+#[derive(Debug)]
+pub struct FeString {
+    pub span: Span,
+    pub kind: FeElementKind,
+}
+
+#[derive(Debug)]
+pub enum FeElementKind {
+    Text {
+        span: Span,
+        text: StrTendril,
+    },
+    Template {
+        opening_bracket: Span,
+        closing_bracket: Span,
+        content_span: Span,
+        content: StrTendril,
+    },
+}
+
+#[derive(Debug)]
+pub struct Span {
+    pub start: usize,
+    pub len: usize,
 }
 
 impl Sink {
@@ -48,9 +93,9 @@ impl TokenSink for Sink {
         match token {
             Token::TagToken(tag) => match tag.kind {
                 TagKind::StartTag => {
-                    self.tree.push(TreeNode::Begin(MyTag {
+                    self.tree.push(TreeNode::Begin(Tag {
                         name: tag.name,
-                        attributes: tag.attrs,
+                        attributes: parse_attributes(tag.attrs),
                     }));
                 }
                 TagKind::EndTag => {
@@ -88,4 +133,8 @@ impl TokenSink for Sink {
 
         TokenSinkResult::Continue
     }
+}
+
+fn parse_attributes(attributes: Vec<html5ever::Attribute>) -> Vec<Attribute> {
+    todo!()
 }
