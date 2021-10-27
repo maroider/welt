@@ -1,0 +1,3 @@
+[alias]
+welt = "run -p welt --"
+weltc = "run -p weltc --"
